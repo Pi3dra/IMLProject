@@ -1,0 +1,605 @@
+[
+  {
+    "x": "/Digital/digital1.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital1.jpg"
+  },
+  {
+    "x": "/Digital/digital10.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital10.jpg"
+  },
+  {
+    "x": "/Digital/digital11.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital11.jpg"
+  },
+  { "x": "/Digital/digital12.jpg", "y": "Digital",
+    "thumbnail": "/Digital/digital12.jpg"
+  },
+  {
+    "x": "/Digital/digital13.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital13.jpg"
+  },
+  {
+    "x": "/Digital/digital14.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital14.jpg"
+  },
+  {
+    "x": "/Digital/digital15.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital15.jpg"
+  },
+  {
+    "x": "/Digital/digital16.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital16.jpg"
+  },
+  {
+    "x": "/Digital/digital17.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital17.jpg"
+  },
+  {
+    "x": "/Digital/digital18.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital18.jpg"
+  },
+  {
+    "x": "/Digital/digital19.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital19.jpg"
+  },
+  {
+    "x": "/Digital/digital2.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital2.jpg"
+  },
+  {
+    "x": "/Digital/digital20.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital20.jpg"
+  },
+  {
+    "x": "/Digital/digital21.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital21.jpg"
+  },
+  {
+    "x": "/Digital/digital22.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital22.jpg"
+  },
+  {
+    "x": "/Digital/digital23.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital23.jpg"
+  },
+  {
+    "x": "/Digital/digital24.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital24.jpg"
+  },
+  {
+    "x": "/Digital/digital25.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital25.jpg"
+  },
+  {
+    "x": "/Digital/digital26.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital26.jpg"
+  },
+  {
+    "x": "/Digital/digital27.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital27.jpg"
+  },
+  {
+    "x": "/Digital/digital28.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital28.jpg"
+  },
+  {
+    "x": "/Digital/digital29.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital29.jpg"
+  },
+  {
+    "x": "/Digital/digital3.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital3.jpg"
+  },
+  {
+    "x": "/Digital/digital30.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital30.jpg"
+  },
+  {
+    "x": "/Digital/digital4.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital4.jpg"
+  },
+  {
+    "x": "/Digital/digital5.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital5.jpg"
+  },
+  {
+    "x": "/Digital/digital6.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital6.jpg"
+  },
+  {
+    "x": "/Digital/digital7.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital7.jpg"
+  },
+  {
+    "x": "/Digital/digital8.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital8.jpg"
+  },
+  {
+    "x": "/Digital/digital9.jpg",
+    "y": "Digital",
+    "thumbnail": "/Digital/digital9.jpg"
+  },
+  {
+    "x": "/Manga/manga1.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga1.jpg"
+  },
+  {
+    "x": "/Manga/manga10.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga10.jpg"
+  },
+  {
+    "x": "/Manga/manga11.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga11.jpg"
+  },
+  {
+    "x": "/Manga/manga12.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga12.jpg"
+  },
+  {
+    "x": "/Manga/manga13.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga13.jpg"
+  },
+  {
+    "x": "/Manga/manga14.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga14.jpg"
+  },
+  {
+    "x": "/Manga/manga15.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga15.jpg"
+  },
+  {
+    "x": "/Manga/manga16.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga16.jpg"
+  },
+  {
+    "x": "/Manga/manga17.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga17.jpg"
+  },
+  {
+    "x": "/Manga/manga18.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga18.jpg"
+  },
+  {
+    "x": "/Manga/manga19.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga19.jpg"
+  },
+  {
+    "x": "/Manga/manga2.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga2.jpg"
+  },
+  {
+    "x": "/Manga/manga20.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga20.jpg"
+  },
+  {
+    "x": "/Manga/manga21.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga21.jpg"
+  },
+  {
+    "x": "/Manga/manga22.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga22.jpg"
+  },
+  {
+    "x": "/Manga/manga23.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga23.jpg"
+  },
+  {
+    "x": "/Manga/manga24.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga24.jpg"
+  },
+  {
+    "x": "/Manga/manga25.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga25.jpg"
+  },
+  {
+    "x": "/Manga/manga26.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga26.jpg"
+  },
+  {
+    "x": "/Manga/manga27.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga27.jpg"
+  },
+  {
+    "x": "/Manga/manga28.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga28.jpg"
+  },
+  {
+    "x": "/Manga/manga29.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga29.jpg"
+  },
+  {
+    "x": "/Manga/manga3.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga3.jpg"
+  },
+  {
+    "x": "/Manga/manga30.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga30.jpg"
+  },
+  {
+    "x": "/Manga/manga31.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga31.jpg"
+  },
+  {
+    "x": "/Manga/manga4.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga4.jpg"
+  },
+  {
+    "x": "/Manga/manga5.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga5.jpg"
+  },
+  {
+    "x": "/Manga/manga6.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga6.jpg"
+  },
+  {
+    "x": "/Manga/manga7.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga7.jpg"
+  },
+  {
+    "x": "/Manga/manga8.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga8.jpg"
+  },
+  {
+    "x": "/Manga/manga9.jpg",
+    "y": "Manga",
+    "thumbnail": "/Manga/manga9.jpg"
+  },
+  {
+    "x": "/Oil/oil1.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil1.jpg"
+  },
+  {
+    "x": "/Oil/oil10.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil10.jpg"
+  },
+  {
+    "x": "/Oil/oil11.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil11.jpg"
+  },
+  {
+    "x": "/Oil/oil12.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil12.jpg"
+  },
+  {
+    "x": "/Oil/oil13.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil13.jpg"
+  },
+  {
+    "x": "/Oil/oil14.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil14.jpg"
+  },
+  {
+    "x": "/Oil/oil15.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil15.jpg"
+  },
+  {
+    "x": "/Oil/oil16.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil16.jpg"
+  },
+  {
+    "x": "/Oil/oil17.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil17.jpg"
+  },
+  {
+    "x": "/Oil/oil18.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil18.jpg"
+  },
+  {
+    "x": "/Oil/oil19.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil19.jpg"
+  },
+  {
+    "x": "/Oil/oil2.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil2.jpg"
+  },
+  {
+    "x": "/Oil/oil20.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil20.jpg"
+  },
+  {
+    "x": "/Oil/oil21.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil21.jpg"
+  },
+  {
+    "x": "/Oil/oil22.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil22.jpg"
+  },
+  {
+    "x": "/Oil/oil23.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil23.jpg"
+  },
+  {
+    "x": "/Oil/oil24.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil24.jpg"
+  },
+  {
+    "x": "/Oil/oil25.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil25.jpg"
+  },
+  {
+    "x": "/Oil/oil26.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil26.jpg"
+  },
+  {
+    "x": "/Oil/oil27.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil27.jpg"
+  },
+  {
+    "x": "/Oil/oil28.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil28.jpg"
+  },
+  {
+    "x": "/Oil/oil29.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil29.jpg"
+  },
+  {
+    "x": "/Oil/oil3.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil3.jpg"
+  },
+  {
+    "x": "/Oil/oil30.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil30.jpg"
+  },
+  {
+    "x": "/Oil/oil4.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil4.jpg"
+  },
+  {
+    "x": "/Oil/oil5.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil5.jpg"
+  },
+  {
+    "x": "/Oil/oil6.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil6.jpg"
+  },
+  {
+    "x": "/Oil/oil7.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil7.jpg"
+  },
+  {
+    "x": "/Oil/oil8.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil8.jpg"
+  },
+  {
+    "x": "/Oil/oil9.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/oil9.jpg"
+  },
+  {
+    "x": "/Oil/studies22.jpg",
+    "y": "Oil",
+    "thumbnail": "/Oil/studies22.jpg"
+  },
+  {
+    "x": "/Studies/studies1.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies1.jpg"
+  },
+  {
+    "x": "/Studies/studies10.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies10.jpg"
+  },
+  {
+    "x": "/Studies/studies11.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies11.jpg"
+  },
+  {
+    "x": "/Studies/studies12.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies12.jpg"
+  },
+  {
+    "x": "/Studies/studies13.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies13.jpg"
+  },
+  {
+    "x": "/Studies/studies14.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies14.jpg"
+  },
+  {
+    "x": "/Studies/studies15.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies15.jpg"
+  },
+  {
+    "x": "/Studies/studies16.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies16.jpg"
+  },
+  {
+    "x": "/Studies/studies17.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies17.jpg"
+  },
+  {
+    "x": "/Studies/studies18.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies18.jpg"
+  },
+  {
+    "x": "/Studies/studies19.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies19.jpg"
+  },
+  {
+    "x": "/Studies/studies2.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies2.jpg"
+  },
+  {
+    "x": "/Studies/studies20.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies20.jpg"
+  },
+  {
+    "x": "/Studies/studies21.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies21.jpg"
+  },
+  {
+    "x": "/Studies/studies23.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies23.jpg"
+  },
+  {
+    "x": "/Studies/studies24.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies24.jpg"
+  },
+  {
+    "x": "/Studies/studies25.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies25.jpg"
+  },
+  {
+    "x": "/Studies/studies26.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies26.jpg"
+  },
+  {
+    "x": "/Studies/studies27.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies27.jpg"
+  },
+  {
+    "x": "/Studies/studies28.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies28.jpg"
+  },
+  {
+    "x": "/Studies/studies29.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies29.jpg"
+  },
+  {
+    "x": "/Studies/studies3.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies3.jpg"
+  },
+  {
+    "x": "/Studies/studies30.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies30.jpg"
+  },
+  {
+    "x": "/Studies/studies4.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies4.jpg"
+  },
+  {
+    "x": "/Studies/studies5.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies5.jpg"
+  },
+  {
+    "x": "/Studies/studies6.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies6.jpg"
+  },
+  {
+    "x": "/Studies/studies7.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies7.jpg"
+  },
+  {
+    "x": "/Studies/studies8.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies8.jpg"
+  },
+  {
+    "x": "/Studies/studies9.jpg",
+    "y": "Studies",
+    "thumbnail": "/Studies/studies9.jpg"
+  }
+]

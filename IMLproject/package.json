@@ -9,9 +9,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "backend": "marcelle-backend"
   },
   "dependencies": {
+    "@marcellejs/backend": "^0.6.5",
     "@marcellejs/core": "^0.6.1"
   },
   "devDependencies": {
