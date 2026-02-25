@@ -4,54 +4,46 @@ import {
   dataStore,
   dashboard,
   datasetTable,
-  datasetBrowser
+  datasetBrowser,
+  imageDisplay,
+  button,
 } from '@marcellejs/core';
 
-const dash = dashboard({ title: 'My Marcelle App', author: 'You' });
+const dash = dashboard({ title: 'Art Reference Suggester', author: 'You' });
 
-// Connect to the Marcelle backend (for dataset storage)
-const store = dataStore('http://localhost:3030');
-const trainingSet = dataset('TrainingSet', store);
+const store = dataStore('memory');
+const imageDataset = dataset('TrainingSet', store);
+const choiceDataset = dataset('Choices', store); 
 
 // Debug logs
-trainingSet.$count.subscribe(count => {
+imageDataset.$count.subscribe(count => {
   console.log(`Dataset contains ${count} instances`);
 });
-
-trainingSet.$changes.subscribe(changes => {
+imageDataset.$changes.subscribe(changes => {
   console.log('Dataset changes:', changes);
 });
 
-
-// ==================== LOADING DATASET ==================== 
-
-
+// ==================== LOADING DATASET ====================
 const staticBase = 'http://localhost:8000';
-
 async function importAllFromServer() {
   await new Promise(r => setTimeout(r, 1000)); // give backend time
-
   try {
     const resp = await fetch(`${staticBase}/index.json`);
     if (!resp.ok) throw new Error("index.json not found");
     const allInstances = await resp.json();
     console.log(`Found ${allInstances.length} images in index`);
-
-    // Optional: skip if already many items exist
-    const currentCount = await trainingSet.$count.get();
+    const currentCount = await imageDataset.$count.get();
     if (currentCount >= allInstances.length) {
       console.log("Dataset already seems populated — skipping");
       return;
     }
-
-    // Bulk create — Marcelle supports receiving an array in some stores, but safest is loop
     let added = 0;
     for (const inst of allInstances) {
       inst.x = new URL(inst.x, staticBase).href;
       inst.thumbnail = new URL(inst.thumbnail, staticBase).href;
-      
+     
       try {
-        await trainingSet.create(inst);
+        await imageDataset.create(inst);
         added++;
       } catch (e) {
         console.warn("Skip duplicate / failed:", inst.x, e);
@@ -62,18 +54,95 @@ async function importAllFromServer() {
     console.error("Import failed:", err);
   }
 }
-
-// Run once — same pattern as your addTestInstances
 importAllFromServer();
 
+// ==================== Helper: URL → ImageData (FIXED for CORS) ====================
+async function urlToImageData(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';   // ← THIS FIXES THE "insecure" ERROR
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    };
+    img.onerror = (e) => {
+      console.error(`Failed to load image for preview (CORS / network issue): ${url}`, e);
+      reject(e);
+    };
+    img.src = url;
+  });
+}
 
-// ==================== DISPLAY DATASET ==================== 
+// ==================== DISPLAY DATASET & Input ====================
+const browser = datasetBrowser(imageDataset);
+const choicebrowser = datasetBrowser(choiceDataset);
 
-// Display components
-const browser = datasetBrowser(trainingSet); // grid of thumbnails + labels
+const selectedImageStream = browser.$selected
+  .map(async (ids) => {
+    console.log("Mapping selected ids:", ids);
+    if (!ids || ids.length === 0) {
+      console.log("→ no selection, returning null");
+      return null;
+    }
+    try {
+      const item = await imageDataset.get(ids[0]);
+      console.log("Fetched item:", item);
+      if (!item || !item.x) {
+        console.log("→ item or item.x missing");
+        return null;
+      }
+      console.log("→ converting to ImageData for preview:", item.x);
+      return await urlToImageData(item.x);
+    } catch (err) {
+      console.error("get() or image conversion failed", err);
+      return null;
+    }
+  })
+  .awaitPromises();
 
-const table = datasetTable(trainingSet, ['thumbnail', 'y']);
+// ================= Image Preview ==================
+const preview = imageDisplay(selectedImageStream);
+preview.title = 'Image Preview';
+
+const likeBtn = button('like');
+const dislikeBtn = button('dislike');
+
+async function storeDecision(label) {
+  const ids = browser.$selected.get();
+  if (!ids || ids.length === 0) {
+    console.warn('No selected picture');
+    return;
+  }
+  try {
+    const item = await imageDataset.get(ids[0]);
+    if (!item) {
+      console.warn('selected item not found');
+      return;
+    }
+    await choiceDataset.create({
+      sourceId: item.id,
+      thumbnail: item.thumbnail,
+      originalLabel: item.y,
+      y: label,
+      reviewedAt: new Date().toISOString(),
+    });
+    console.log(`Stored ${item.id} with ${label}`);
+  } catch (err) {
+    console.error(`Failed to store decision:`, err);
+  }
+}
+
+likeBtn.$click.subscribe(() => storeDecision('liked'));
+dislikeBtn.$click.subscribe(() => storeDecision('disliked'));
+
+const table = datasetTable(imageDataset, ['thumbnail', 'y']);
+
 dash.page('Data Management')
-  .use(browser)   // main visual display
+  .use(browser, choicebrowser) 
+  .sidebar(preview,likeBtn, dislikeBtn);
 
 dash.show();
