@@ -14,9 +14,9 @@ import {
 const dash = dashboard({ title: 'Art Reference Suggester', author: 'You' });
 const store = dataStore('memory'); // or 'localStorage'/'indexedDB' for persistence
 
-const imageDataset = dataset('TrainingSet', store);
-const choiceDataset = dataset('Choices', store);
-const suggestedDataset = dataset('SuggestedLiked', store);
+const imageDataset     = dataset('TrainingSet', store);
+const choiceDataset    = dataset('Choices', store);
+const suggestedDataset = dataset('Suggested', store);          // contains both liked & disliked
 
 // ── Debug logs ────────────────────────────────────────────────
 imageDataset.$count.subscribe(count => console.log(`Main dataset: ${count} instances`));
@@ -76,7 +76,7 @@ const browser = datasetBrowser(imageDataset);
 const choicebrowser = datasetBrowser(choiceDataset);
 const suggestedBrowser = datasetBrowser(suggestedDataset);
 
-const selectedImageStream = browser.$selected
+const selectedImageStream1 = browser.$selected
   .map(async (ids) => {
     if (!ids?.length) return null;
     try {
@@ -88,13 +88,30 @@ const selectedImageStream = browser.$selected
   })
   .awaitPromises();
 
-const preview = imageDisplay(selectedImageStream);
-preview.title = 'Image Preview';
+const selectedImageStream2 = suggestedBrowser.$selected
+  .map(async (ids) => {
+    if (!ids?.length) return null;
+    try {
+      const item = await suggestedDataset.get(ids[0]);
+      if (!item?.x) return null;
+      return await urlToImageData(item.x);
+    } catch (err) {
+      console.error('Error loading suggested image:', err);
+      return null;
+    }
+  })
+  .awaitPromises();
+
+const preview1 = imageDisplay(selectedImageStream1);
+preview1.title = 'Image Preview';
+
+const preview2 = imageDisplay(selectedImageStream2);
+preview2.title = 'Suggested Image Preview';
 
 const likeBtn = button('Like');
 const dislikeBtn = button('Dislike');
 
-// Feature extractor (used at labeling time + suggestion time)
+// Feature extractor
 const featureExtractor = mobileNet({ version: 2, alpha: 0.5 });
 
 async function storeDecision(label) {
@@ -108,21 +125,20 @@ async function storeDecision(label) {
     const item = await imageDataset.get(ids[0]);
     if (!item) return;
 
-    // Extract embedding NOW (inspired by sketch example)
     const imgData = await urlToImageData(item.x);
     const embedding = await featureExtractor.process(imgData);
 
     await choiceDataset.create({
       sourceId: item.id,
-      x: embedding,                   // ← number[] features (required for train)
+      x: embedding,
       thumbnail: item.thumbnail,
       originalLabel: item.y || 'unknown',
-      y: label,                       // 'liked' / 'disliked'
+      y: label,                      // 'liked' / 'disliked'
       validation: label,
       reviewedAt: new Date().toISOString(),
     });
 
-    console.log(`Labeled ${item.id} as ${label} (embedding stored)`);
+    console.log(`Labeled ${item.id} as ${label}`);
   } catch (err) {
     console.error('Store failed:', err);
   }
@@ -139,26 +155,26 @@ const classifier = mlpClassifier({
 });
 
 const trainBtn = button('Train Preference Model');
-const suggestBtn = button('Generate Liked Suggestions');
+const suggestBtn = button('Generate Suggestions (≥80%)');
 const statusText = text('Model status: Not trained yet');
 
 classifier.$training.subscribe((s) => {
-  if (s.status === 'start') statusText.$value.set('Training...');
+  if (s.status === 'start')    statusText.$value.set('Training...');
   else if (s.status === 'epoch') statusText.$value.set(`Epoch ${s.epoch} — loss: ${s.loss?.toFixed(3) ?? '–'}`);
   else if (s.status === 'success') statusText.$value.set('✅ Trained!');
-  else if (s.status === 'error') statusText.$value.set('❌ Failed');
+  else if (s.status === 'error')   statusText.$value.set('❌ Failed');
 });
 
 trainBtn.$click.subscribe(async () => {
   statusText.$value.set('Checking choices...');
   const count = await choiceDataset.$count.get();
   if (count < 6) {
-    statusText.$value.set('Need ≥6 examples');
+    statusText.$value.set('Need ≥6 examples (ideally balanced)');
     return;
   }
   statusText.$value.set('Training on choices...');
   try {
-    await classifier.train(choiceDataset);  // ← works because x = embedding[]
+    await classifier.train(choiceDataset);
     statusText.$value.set('Training done!');
   } catch (err) {
     console.error('Train error:', err);
@@ -166,9 +182,9 @@ trainBtn.$click.subscribe(async () => {
   }
 });
 
-// ── GENERATE SUGGESTIONS (manual inference loop) ──────────────
+// ── GENERATE SUGGESTIONS — only 'liked' or 'disliked', no % in label ───────
 async function getAll(ds) {
-  return await ds.items().toArray();  // should work now (docs confirm this pattern)
+  return await ds.items().toArray();
 }
 
 async function clearDataset(ds) {
@@ -178,7 +194,7 @@ async function clearDataset(ds) {
 
 suggestBtn.$click.subscribe(async () => {
   statusText.$value.set('Clearing old suggestions...');
-  await clearDataset(suggestedDataset);
+  //await clearDataset(suggestedDataset);
 
   const choices = await getAll(choiceDataset);
   const chosenIds = new Set(choices.map(c => c.sourceId));
@@ -187,6 +203,7 @@ suggestBtn.$click.subscribe(async () => {
   statusText.$value.set(`Classifying ${allImages.length} images...`);
 
   let added = 0;
+
   for (const img of allImages) {
     if (chosenIds.has(img.id)) continue;
 
@@ -194,14 +211,26 @@ suggestBtn.$click.subscribe(async () => {
       const imgData = await urlToImageData(img.x);
       const embedding = await featureExtractor.process(imgData);
 
-      const pred = await classifier.predict(embedding);  // number[] → works
+      const pred = await classifier.predict(embedding);
 
-      if (pred.label === 'liked' && pred.confidences.liked > 0.65) {
+      const confLiked    = pred.confidences.liked    ?? 0;
+      const confDisliked = pred.confidences.disliked ?? 0;
+
+      if (pred.label === 'liked' && confLiked > 0.70) {
         await suggestedDataset.create({
           ...img,
           predicted: 'liked',
-          confidence: pred.confidences.liked,
-          y: `liked (${(pred.confidences.liked * 100).toFixed(0)}%)`,
+          confidence: confLiked,
+          y: 'liked',                    
+        });
+        added++;
+      }
+      else if (pred.label === 'disliked' && confDisliked > 0.50 && confDisliked < 0.80) {
+        await suggestedDataset.create({
+          ...img,
+          predicted: 'disliked',
+          confidence: confDisliked,
+          y: 'disliked',                
         });
         added++;
       }
@@ -209,12 +238,17 @@ suggestBtn.$click.subscribe(async () => {
       console.warn('Skip', img.id, e);
     }
   }
-  statusText.$value.set(`${added} new liked suggestions!`);
+
+  statusText.$value.set(`Added ${added} high-confidence suggestions (≥80%)`);
 });
 
 // ── DASHBOARD ─────────────────────────────────────────────────
-dash.page('Data Management')
-  .use(browser, choicebrowser,statusText, suggestedBrowser)
-  .sidebar(preview, likeBtn, dislikeBtn, trainBtn, suggestBtn, );
+dash.page('Data & Labeling')
+  .use(browser, choicebrowser)
+  .sidebar(preview1, likeBtn, dislikeBtn);
+
+dash.page('Suggestions (≥80% conf)')
+  .use([trainBtn, suggestBtn], statusText, suggestedBrowser)
+  .sidebar(preview2);
 
 dash.show();
