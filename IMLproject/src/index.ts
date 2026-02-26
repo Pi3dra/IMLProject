@@ -9,25 +9,17 @@ import {
   text,
   mobileNet,
   mlpClassifier,
+  imageUpload,
+  slider,
 } from '@marcellejs/core';
 
+// ── DASHBOARD & STORE ────────────────────────────────────────────────
 const dash = dashboard({ title: 'Art Reference Suggester', author: 'You' });
 const store = dataStore('memory');
 
 const imageDataset     = dataset('TrainingSet', store);
 const choiceDataset    = dataset('Choices', store);
 const suggestedDataset = dataset('Suggested', store);
-
-// ── Debug counts ─────────────────────────────────────────────────────
-imageDataset.$count.subscribe(count => 
-  console.log(`Main dataset: ${count} instances`)
-);
-suggestedDataset.$count.subscribe(count => 
-  console.log(`Suggested dataset: ${count} instances`)
-);
-choiceDataset.$count.subscribe(count => 
-  console.log(`Choices dataset: ${count} instances`)
-);
 
 // ── LOAD DATA FROM SERVER ────────────────────────────────────────────
 const staticBase = 'http://localhost:8000';
@@ -36,7 +28,7 @@ async function importAllFromServer() {
   await new Promise(r => setTimeout(r, 1000));
   const resp = await fetch(`${staticBase}/index.json`);
   if (!resp.ok) throw new Error("index.json not found");
-  
+
   const allInstances = await resp.json();
   const currentCount = await imageDataset.$count.get();
   if (currentCount >= allInstances.length) return;
@@ -48,7 +40,6 @@ async function importAllFromServer() {
   }
   console.log(`Imported ${allInstances.length} images`);
 }
-
 importAllFromServer();
 
 // ── URL → ImageData ──────────────────────────────────────────────────
@@ -70,30 +61,14 @@ async function urlToImageData(url: string): Promise<ImageData> {
 }
 
 // ── DATASET BROWSERS ─────────────────────────────────────────────────
-const browser         = datasetBrowser(imageDataset);
-const choicebrowser   = datasetBrowser(choiceDataset);
+const browser          = datasetBrowser(imageDataset);
+browser.title = "Image Browser";
+const choicebrowser    = datasetBrowser(choiceDataset);
+choicebrowser.title = "Your Data";
 const suggestedBrowser = datasetBrowser(suggestedDataset);
+suggestedBrowser.title = "Model Suggestions";
 
-// ── SHARED CURRENT SELECTION (simple variable) ───────────────────────
-let currentSelection: { dataset: any; id: string } | null = null;
-
-// Update when main browser selection changes
-browser.$selected.subscribe(ids => {
-  if (ids?.length) {
-    currentSelection = { dataset: imageDataset, id: ids[0] };
-    console.log('Current selection → main dataset', ids[0]);
-  }
-});
-
-// Update when suggested browser selection changes (takes priority)
-suggestedBrowser.$selected.subscribe(ids => {
-  if (ids?.length) {
-    currentSelection = { dataset: suggestedDataset, id: ids[0] };
-    console.log('Current selection → suggested dataset', ids[0]);
-  }
-});
-
-// ── PREVIEW STREAMS ──────────────────────────────────────────────────
+// ── IMAGE PREVIEWS ───────────────────────────────────────────────────
 const selectedImageStream1 = browser.$selected
   .map(async (ids) => {
     if (!ids?.length) return null;
@@ -105,14 +80,8 @@ const selectedImageStream1 = browser.$selected
 const selectedImageStream2 = suggestedBrowser.$selected
   .map(async (ids) => {
     if (!ids?.length) return null;
-    console.log(`Trying to load suggested item: ${ids[0]}`);
-    try {
-      const item = await suggestedDataset.get(ids[0]);
-      return item?.x ? await urlToImageData(item.x) : null;
-    } catch (err) {
-      console.error('Failed to load suggested item:', err);
-      return null;
-    }
+    const item = await suggestedDataset.get(ids[0]);
+    return item?.x ? await urlToImageData(item.x) : null;
   })
   .awaitPromises();
 
@@ -122,42 +91,68 @@ preview1.title = 'Main Image Preview';
 const preview2 = imageDisplay(selectedImageStream2);
 preview2.title = 'Suggested Image Preview';
 
-// ── LABELING ─────────────────────────────────────────────────────────
-const likeBtn    = button('Like');
-const dislikeBtn = button('Dislike');
+// ── IMAGE UPLOAD ─────────────────────────────
+const upload = imageUpload({ width: 256, height: 256 });
+upload.title = 'Upload Reference';
 
+// ── FEATURE EXTRACTOR ────────────────────────────────────────────────
 const featureExtractor = mobileNet({ version: 2, alpha: 0.5 });
+
+// Convert uploaded images directly into liked training samples
+upload.$images.subscribe(async (imgData) => {
+  if (!imgData) return;
+
+  const embedding = await featureExtractor.process(imgData);
+  const id = `upload-${Date.now()}`;
+
+  await choiceDataset.create({
+    id,
+    x: embedding,
+    y: 'liked',
+    thumbnail: upload.$thumbnails.get(),
+    originalId: id,
+    originalLabel: 'user-upload',
+    reviewedAt: new Date().toISOString(),
+    sourceDataset: 'imageUpload',
+  });
+
+  console.log(`Stored uploaded image as liked (${id})`);
+});
+
+// ── LABEL BUTTONS ────────────────────────────────────────────────────
+let currentSelection: { dataset: any; id: string } | null = null;
+
+browser.$selected.subscribe(ids => {
+  if (ids?.length) currentSelection = { dataset: imageDataset, id: ids[0] };
+});
+suggestedBrowser.$selected.subscribe(ids => {
+  if (ids?.length) currentSelection = { dataset: suggestedDataset, id: ids[0] };
+});
+
+const likeBtn    = button('Like');
+likeBtn.title = "";
+const dislikeBtn = button('Dislike');
+dislikeBtn.title = "";
 
 async function storeDecision(label: 'liked' | 'disliked') {
   const sel = currentSelection;
-  if (!sel?.id || !sel.dataset) {
-    console.warn('No image currently selected – please select one first');
-    return;
-  }
+  if (!sel) return;
 
-  try {
-    const item = await sel.dataset.get(sel.id);
-    const imgData = await urlToImageData(item.x);
-    const embedding = await featureExtractor.process(imgData);
+  const item = await sel.dataset.get(sel.id);
+  const imgData = await urlToImageData(item.x);
+  const embedding = await featureExtractor.process(imgData);
 
-    const originalId = item.originalId || item.id;
+  await choiceDataset.create({
+    id: item.id,
+    x: embedding,
+    thumbnail: item.thumbnail,
+    originalId: item.id,
+    originalLabel: item.y || 'unknown',
+    y: label,
+    reviewedAt: new Date().toISOString(),
+  });
 
-    await choiceDataset.create({
-      id: originalId,           // reuse meaningful id if possible
-      x: embedding,
-      thumbnail: item.thumbnail,
-      originalId,
-      originalLabel: item.y || 'unknown',
-      y: label,
-      reviewedAt: new Date().toISOString(),
-      sourceDataset: sel.dataset.name || 'unknown',
-    });
-
-    console.log(`Labeled ${originalId} as ${label} (from ${sel.dataset.name})`);
-
-  } catch (err) {
-    console.error('Failed to store decision:', err);
-  }
+  console.log(`Labeled ${item.id} as ${label}`);
 }
 
 likeBtn.$click.subscribe(() => storeDecision('liked'));
@@ -171,9 +166,32 @@ const classifier = mlpClassifier({
 });
 
 const trainBtn = button('Train Preference Model');
+trainBtn.title = "";
 const suggestBtn = button('Generate Suggestions');
+suggestBtn.title = "";
 const statusText = text('Model status: Not trained yet');
 
+// ── CONFIDENCE SLIDER ────────────────────────────────────────────────
+let confidenceThreshold = 0.7;
+
+const thresholdSlider = slider({
+  values: [0.7],
+  min: 0,
+  max: 1,
+  step: 0.01,
+  range: 'min',
+  float: true,
+  pips: true,
+  formatter: (x) => `${Math.round(Number(x) * 100)}%`,
+});
+thresholdSlider.title = "Confidence Threshold";
+
+thresholdSlider.$values.subscribe(v => {
+  const parsed = JSON.parse(v as string);
+  confidenceThreshold = Array.isArray(parsed) ? parsed[0] : parsed;
+});
+
+// ── TRAINING ─────────────────────────────────────────────────────────
 trainBtn.$click.subscribe(async () => {
   const count = await choiceDataset.$count.get();
   if (count < 6) {
@@ -185,28 +203,22 @@ trainBtn.$click.subscribe(async () => {
   statusText.$value.set('Training complete!');
 });
 
-// ── HELPERS ──────────────────────────────────────────────────────────
+// ── SUGGESTIONS ──────────────────────────────────────────────────────
 async function getAll(ds: any) {
   return await ds.items().toArray();
 }
 
 async function clearDataset(ds: any) {
   const items = await ds.items().toArray();
-  for (const item of items) {
-    await ds.remove(item.id);
-  }
-  console.log(`${ds.name} cleared`);
+  for (const item of items) await ds.remove(item.id);
 }
 
-// ── GENERATE SUGGESTIONS ─────────────────────────────────────────────
 suggestBtn.$click.subscribe(async () => {
   statusText.$value.set('Generating suggestions...');
-
-	clearDataset(suggestedDataset);
+  await clearDataset(suggestedDataset);
 
   const choices = await getAll(choiceDataset);
   const chosenIds = new Set(choices.map(c => c.originalId));
-
   const allImages = await getAll(imageDataset);
 
   for (const img of allImages) {
@@ -217,29 +229,27 @@ suggestBtn.$click.subscribe(async () => {
     const pred = await classifier.predict(embedding);
     const confLiked = pred.confidences.liked ?? 0;
 
-    if (pred.label === 'liked' && confLiked > 0.7) {
+    if (pred.label === 'liked' && confLiked > confidenceThreshold) {
       await suggestedDataset.create({
-        id: img.id,           // keep original id → consistent & easier debugging
+        id: img.id,
         x: img.x,
         thumbnail: img.thumbnail,
-        originalId: img.id,
-        predicted: 'liked',
         confidence: confLiked,
         y: 'liked',
       });
-      console.log(`Suggested image ${img.id} (conf: ${confLiked.toFixed(3)})`);
     }
   }
+
   statusText.$value.set('Suggestions ready!');
 });
 
 // ── DASHBOARD LAYOUT ─────────────────────────────────────────────────
 dash.page('Data & Labeling')
-  .use(browser, choicebrowser)
-  .sidebar(preview1, likeBtn, dislikeBtn);
+  .use(choicebrowser, browser )
+  .sidebar(preview1, likeBtn, dislikeBtn, upload);
 
 dash.page('Suggestions')
-  .use([trainBtn, suggestBtn], statusText, suggestedBrowser)
+  .use(choicebrowser, [trainBtn, suggestBtn], thresholdSlider, statusText, suggestedBrowser)
   .sidebar(preview2, likeBtn, dislikeBtn);
 
 dash.show();
